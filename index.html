@@ -24,32 +24,18 @@
 <body>
   <div id="app" v-cloak>
     <login-form />
-
-    <hr />
-    <button @click="toggleBox">Toggle Box</button>
-    <div v-if="isVisible" class="box"></div>
-
   </div>
-
+  <hr />
+  <div id="toggleBox">
+    <button @click="toggleBox">Toggle Box</button>
+    <test-box v-if="isVisible" />
+  </div>
 
   <script>
     let app = Vue.createApp({
-      data() {
-        return {
-          greeting: 'Hello Vue3!',
-          isVisible: false,
-        }
-      },
-      methods: {
-        toggleBox() {
-          this.isVisible = !this.isVisible
-        },
-        greet(greeting) {
-          console.log(greeting)
-        }
-      }
     })
-    app.component('login-form', {
+
+    app.component("login-form", {
       template: `
         <form @submit.prevent="handleSubmit">
           <h1>{{ title }}</h1>
@@ -95,9 +81,9 @@
     app.component('custom-input', {
       template: `
         <label>
-          {{ label }}
-          <input :type="type" v-model="inputValue">
-        </label>
+            {{ label }}
+            <input :type="type" v-model="inputValue">
+          </label>
       `,
       props: ['label', 'type', 'modelValue'],
       computed: {
@@ -106,17 +92,49 @@
             return this.modelValue
           },
           set(value) {
-            this.$emit('update:modelValue', value)
-          }
+          this.$emit('update:modelValue', value)
+        }
         }
       }
-      // data() {
-      //   return {
-      //     inputValue: ''
-      //   }
-      // }
     })
+
+    let toggleBox = Vue.createApp({
+      data() {
+        return {
+          greeting: 'Hello Vue3!',
+          isVisible: false
+        }
+      },
+      methods: {
+        toggleBox() {
+          this.isVisible = !this.isVisible
+        },
+        greet(greeting) {
+          console.log(greeting)
+        }
+      },
+      updated() {
+        console.log('updated')
+      }
+    })
+
+    toggleBox.component("test-box", {
+      template: `
+        <div class="box"></div>
+      `,
+      created() {
+        console.log('created')
+      },
+      mounted() {
+        console.log('mounted')
+      },
+      unmounted() {
+        console.log('unmounted')
+      }
+    })
+
     app.mount('#app')
+    toggleBox.mount('#toggleBox')
   </script>
 </body>
 </html>
